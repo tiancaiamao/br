@@ -162,7 +162,7 @@ func RunRestore(c context.Context, g glue.Glue, cmdName string, cfg *RestoreConf
 	ddlJobs := restore.FilterDDLJobs(client.GetDDLJobs(), tables)
 
 	// pre-set TiDB config for restore
-	enableTiDBConfig()
+	enableTiDBConfig(c)
 
 	// execute DDL first
 	err = client.ExecDDLs(ddlJobs)
@@ -569,11 +569,11 @@ func RunRestoreTiflashReplica(c context.Context, g glue.Glue, cmdName string, cf
 	return nil
 }
 
-func enableTiDBConfig() {
+func enableTiDBConfig(c context.Context) {
 	// set max-index-length before execute DDLs and create tables
 	// we set this value to max(3072*4), otherwise we might not restore table
 	// when upstream and downstream both set this value greater than default(3072)
-	conf := config.GetGlobalConfig()
+	conf := config.GetGlobalConfig(c)
 	conf.MaxIndexLength = config.DefMaxOfMaxIndexLength
 	log.Warn("set max-index-length to max(3072*4) to skip check index length in DDL")
 

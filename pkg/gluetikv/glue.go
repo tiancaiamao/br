@@ -31,7 +31,7 @@ func (Glue) CreateSession(store kv.Storage) (glue.Session, error) {
 // Open implements glue.Glue.
 func (Glue) Open(path string, option pd.SecurityOption) (kv.Storage, error) {
 	if option.CAPath != "" {
-		conf := config.GetGlobalConfig()
+		conf := config.GetGlobalConfig(context.Context)
 		conf.Security.ClusterSSLCA = option.CAPath
 		conf.Security.ClusterSSLCert = option.CertPath
 		conf.Security.ClusterSSLKey = option.KeyPath
